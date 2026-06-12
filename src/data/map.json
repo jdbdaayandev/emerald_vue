@@ -1,0 +1,16 @@
+{
+  "pallet_town": {
+    "name": "Pallet Town",
+    "mapAsset": "/assets/maps/pallet_town.json",
+    "tilesetAsset": "/assets/images/pokemon_tiles.png",
+    "tilesetNameInTiled": "pokemon_tiles",
+    "bgm": "/assets/audio/bgm_pallet.mp3"
+  },
+  "player_house_f1": {
+    "name": "Ash's House",
+    "mapAsset": "/assets/maps/house_f1.json",
+    "tilesetAsset": "/assets/images/indoor_tiles.png",
+    "tilesetNameInTiled": "indoor_tiles",
+    "bgm": null
+  }
+}

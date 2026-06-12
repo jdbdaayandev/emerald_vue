@@ -1,0 +1,17 @@
+{
+  "potion": {
+    "name": "Potion",
+    "type": "medicine",
+    "price": 300,
+    "effect": "heal",
+    "value": 20,
+    "description": "Restores the HP of a Pokemon by 20 points."
+  },
+  "pokeball": {
+    "name": "Poke Ball",
+    "type": "ball",
+    "price": 200,
+    "catchRateMultiplier": 1.0,
+    "description": "A device for catching wild Pokemon. It is thrown like a ball at a target."
+  }
+}

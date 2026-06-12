@@ -1,0 +1,7 @@
+{
+  "hardy": { "increased": null, "decreased": null },
+  "lonely": { "increased": "atk", "decreased": "def" },
+  "adamant": { "increased": "atk", "decreased": "spa" },
+  "modest": { "increased": "spa", "decreased": "atk" },
+  "timid": { "increased": "spe", "decreased": "atk" }
+}

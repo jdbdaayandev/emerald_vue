@@ -1,0 +1,14 @@
+{
+  "npc_oak": {
+    "name": "Prof. Oak",
+    "defaultDialog": [
+      "Here is your Pokedex!",
+      "Take care of it."
+    ],
+    "postEventDialog": [
+      "How is your Pokedex coming along?",
+      "Catch them all!"
+    ],
+    "setFlagOnComplete": "oak_gave_pokedex"
+  }
+}

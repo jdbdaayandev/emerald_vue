@@ -1,0 +1,21 @@
+{
+  "tackle": {
+    "name": "Tackle",
+    "type": "Normal",
+    "category": "Physical",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 35,
+    "description": "A physical attack in which the user charges and slams into the target with its whole body."
+  },
+  "ember": {
+    "name": "Ember",
+    "type": "Fire",
+    "category": "Special",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 25,
+    "effectChance": 10,
+    "effectType": "BURN"
+  }
+}
