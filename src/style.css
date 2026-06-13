@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+/* 1. Define your custom retro theme here */
+@theme {
+  --color-gba-bg: #f8f8f8;       /* Classic menu background */
+  --color-gba-border: #484848;   /* Dark grey frame */
+  --color-gba-text: #303030;     /* Retro text color */
+  
+  --font-pixel: "Courier New", monospace; /* We'll use this until you add a real pixel font */
+}
+
+/* 2. Standard body reset to center the game canvas */
+@layer base {
+  body {
+    background-color: var(--color-gray-900);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+}

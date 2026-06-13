@@ -1,45 +1,89 @@
-import { Scene } from 'phaser';
+// src/scenes/OverworldScene.js
+import Phaser, { Scene } from 'phaser';
 import mapRegistry from '../data/maps.json';
+import npcRegistry from '../data/npcs.json';
 import MovementSystem from '../systems/MovementSystem.js';
-import WarpSystem from '../systems/WarpSystem.js';
+import AnimationSystem from '../systems/AnimationSystem.js'; 
+import { GameState } from '../core/GameState.js';
+import NPCSystem from '../systems/NPCSystem.js'; 
 
 export default class OverworldScene extends Scene {
   constructor() {
     super('OverworldScene');
   }
 
-  // 1. Receive the target map data when the scene starts
   init(data) {
-    // Default to pallet_town if no data is passed (e.g., when the game first boots)
-    this.currentMapKey = data.mapKey || 'pallet_town';
+    this.currentMapKey = data.mapKey || GameState.player.location.map;
     this.mapConfig = mapRegistry[this.currentMapKey];
     
-    // Default spawn coordinates (overridden if stepping through a door)
-    this.spawnX = data.spawnX || 160;
-    this.spawnY = data.spawnY || 160;
+    this.spawnX = data.spawnX || GameState.player.location.x;
+    this.spawnY = data.spawnY || GameState.player.location.y;
   }
 
   preload() {
-    // 2. Dynamically load the assets for THIS map only
     this.load.tilemapTiledJSON(this.currentMapKey, this.mapConfig.mapAsset);
     this.load.image(this.mapConfig.tilesetNameInTiled, this.mapConfig.tilesetAsset);
   }
 
   create() {
-    // 3. Draw the specific map requested
     const map = this.make.tilemap({ key: this.currentMapKey });
-    const tileset = map.addTilesetImage(this.mapConfig.tilesetNameInTiled);
-    map.createLayer('Ground', tileset, 0, 0);
+    const tileset = map.addTilesetImage(this.mapConfig.tilesetNameInTiled, this.mapConfig.tilesetNameInTiled);
+    
+    // 1. GROUND LAYER AT OBJECT LAYER
+    const groundLayer = map.createLayer('Ground', tileset, 0, 0);
+    const objectLayer = map.createLayer('Object', tileset, 0, 0);
+    
+    // 2. COLLISION LAYER
+    const collisionLayer = map.createLayer('Collission', tileset, 0, 0);
+    
+    // Debug Graphics para sa orange walls
+    const debugGraphics = this.add.graphics().setAlpha(0.75); 
+    collisionLayer.renderDebug(debugGraphics, {
+      tileColor: null, 
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), 
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255) 
+    });
 
-    // 4. Spawn Player at the dynamic coordinates
-    this.playerSprite = this.physics.add.sprite(this.spawnX, this.spawnY, 'player_sprite');
-    this.movementSystem = new MovementSystem(this, this.playerSprite);
+    if (collisionLayer) collisionLayer.setVisible(false);
 
-    // 5. Initialize the Warp System to look for doors
-    this.warpSystem = new WarpSystem(this, map, this.playerSprite);
+    // 3. Buhayin ang Player
+    const playerSnapX = Math.floor(this.spawnX / 16) * 16 + 8;
+    const playerSnapY = Math.floor(this.spawnY / 16) * 16 + 8;
+    this.playerSprite = this.physics.add.sprite(playerSnapX, playerSnapY, 'player');
+    
+    this.playerSprite.setOrigin(0.5, 0.75);
+    this.playerSprite.body.customSize = true;
+    this.playerSprite.body.setSize(16, 16, false);
+    
+    // 👇 INAYOS NA OFFSET PARA SA (0.38, 0.75) ORIGIN 👇
+    this.playerSprite.body.setOffset(8, 16); 
+
+    this.animationSystem = new AnimationSystem(this);
+    this.animationSystem.createCharacterAnimations('player');
+    this.animationSystem.createCharacterAnimations('npc_1');
+    this.playerSprite.setFrame(0);
+
+    // 5. SPAWN NG MGA NPC
+    this.npcSystem = new NPCSystem(this);
+    this.npcSystem.spawnNPCs(map, collisionLayer);
+
+    // 6. OVERHEAD LAYER
+    const overheadLayer = map.createLayer('Overhead', tileset, 0, 0);
+    if (overheadLayer) overheadLayer.setDepth(10); 
+
+    // 7. MOVEMENT & CAMERA SYSTEM
+    this.movementSystem = new MovementSystem(this, this.playerSprite, collisionLayer);
+    this.cameras.main.startFollow(this.playerSprite);
+    this.cameras.main.setZoom(2);
   }
 
   update() {
     this.movementSystem.update();
+    
+    // 👇 INAYOS DIN SA UPDATE LOOP PARA HINDI MABURA NG ANIMATIONS 👇
+    if (this.playerSprite && this.playerSprite.body) {
+      this.playerSprite.body.setSize(16, 16, false);
+      this.playerSprite.body.setOffset(8, 16); 
+    }
   }
 }

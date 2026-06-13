@@ -1,0 +1,27 @@
+{
+  "npc_1": {
+    "name": "Wandering Boy",
+    "spriteKey": "npc_1",
+    "movementType": "wander",
+    "speed": 300,
+    "dialogId": "npc_1_dialog",
+    "frames": {
+      "down": 0,
+      "left": 4,
+      "right": 8,
+      "up": 12
+    }
+  },
+  "mom": {
+    "name": "Mom",
+    "spriteKey": "mom",
+    "movementType": "static",
+    "dialogId": "mom_initial_dialog",
+    "frames": {
+      "down": 0,
+      "left": 1,
+      "right": 2,
+      "up": 3
+    }
+  }
+}

@@ -1,14 +1,22 @@
 {
-  "npc_oak": {
-    "name": "Prof. Oak",
-    "defaultDialog": [
-      "Here is your Pokedex!",
-      "Take care of it."
-    ],
-    "postEventDialog": [
-      "How is your Pokedex coming along?",
-      "Catch them all!"
-    ],
-    "setFlagOnComplete": "oak_gave_pokedex"
+  "mom_initial_dialog": {
+    "name": "Mom",
+    "text": [
+      "Mom: Oh, Ash! Gising ka na pala.",
+      "Mom: Pwede mo ba akong ikuha ng meryenda sa Poké Mart sa tabi?"
+    ]
+  },
+  "mom_repeated_dialog": {
+    "name": "Mom",
+    "text": [
+      "Mom: Nagpunta ka na ba sa Poké Mart?"
+    ]
+  },
+  "npc_1_dialog": {
+    "name": "Boy",
+    "text": [
+      "Boy: Grabe, napakaganda talaga dito sa Sproutwood Town!",
+      "Boy: Balang araw, magiging Pokémon Champion din ako!"
+    ]
   }
 }

@@ -102,4 +102,39 @@ export default class Pokemon {
     const randomIndex = Math.floor(Math.random() * abilitiesArray.length);
     return abilitiesArray[randomIndex];
   }
+
+  /**
+   * Called when this Pokémon defeats an enemy in battle.
+   * @param {string} defeatedPokemonId - The ID of the fainted enemy (e.g., 'geodude')
+   */
+  gainEvsFrom(defeatedPokemonId) {
+    const evYield = pokemonData[defeatedPokemonId].evYield;
+    if (!evYield) return;
+
+    let totalEvs = Object.values(this.evs).reduce((sum, val) => sum + val, 0);
+
+    // Loop through each stat in the yield
+    for (const stat in evYield) {
+      const yieldAmount = evYield[stat];
+      
+      if (yieldAmount > 0) {
+        // Calculate how much room we have left for this specific stat (Max 252)
+        const roomInStat = 252 - this.evs[stat];
+        
+        // Calculate how much room we have left overall (Max 510)
+        const roomTotal = 510 - totalEvs;
+
+        // Add the smallest possible amount so we don't exceed the caps
+        const actualGain = Math.min(yieldAmount, roomInStat, roomTotal);
+
+        if (actualGain > 0) {
+          this.evs[stat] += actualGain;
+          totalEvs += actualGain;
+        }
+      }
+    }
+
+    // Recalculate stats immediately so the new EVs take effect!
+    this.calculateStats();
+  }
 }

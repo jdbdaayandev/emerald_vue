@@ -43,12 +43,26 @@ export default class BootScene extends Scene {
 
     // 3. LOAD YOUR ASSETS HERE
     // this.load.image('player_sprite', '/assets/images/player.png');
+    this.load.spritesheet('player', '/assets/sprites/player/player_male.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    });
+
+    this.load.spritesheet('npc_1', '/assets/sprites/npc/npc_1.png', {
+      frameWidth: 16,
+      frameHeight: 32
+    });
+
+    this.load.spritesheet('mom', '/assets/sprites/npc/npc_2.png', {
+      frameWidth: 16,
+      frameHeight: 32
+    });
     // this.load.audio('bgm', '/assets/audio/pallet_town.mp3');
     // (Imagine 100 more files loading here)
   }
 
   create() {
     // The moment the 'complete' event fires, jump to the Overworld!
-    this.scene.start('OverworldScene');
+    this.scene.start('SplashScene');
   }
 }

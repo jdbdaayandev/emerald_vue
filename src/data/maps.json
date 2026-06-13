@@ -1,0 +1,9 @@
+{
+  "sproutwood_town": {
+    "name": "Sproutwood Town",
+    "mapAsset": "/assets/maps/sproutwood_town.json",
+    "tilesetAsset": "/assets/maps/tilesets/exterior_tileset.png",
+    "tilesetNameInTiled": "exterior_tileset",
+    "bgm": null
+  }
+}
