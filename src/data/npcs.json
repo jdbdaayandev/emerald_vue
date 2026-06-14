@@ -13,15 +13,9 @@
     }
   },
   "mom": {
-    "name": "Mom",
     "spriteKey": "mom",
     "movementType": "static",
-    "dialogId": "mom_initial_dialog",
-    "frames": {
-      "down": 0,
-      "left": 1,
-      "right": 2,
-      "up": 3
-    }
+    "direction": "down",
+    "dialogId": "mom_intro" 
   }
 }

@@ -18,5 +18,15 @@
       "Boy: Grabe, napakaganda talaga dito sa Sproutwood Town!",
       "Boy: Balang araw, magiging Pokémon Champion din ako!"
     ]
-  }
+  },
+  "mom_intro": [
+    {
+      "speaker": "Mom",
+      "text": "Ash! Kanina ka pa hinahanap ni Prof. Birch."
+    },
+    {
+      "speaker": "Mom",
+      "text": "Puntahan mo na siya sa kaniyang lab. Baka may ibibigay siyang Pokémon sa'yo!"
+    }
+  ]
 }

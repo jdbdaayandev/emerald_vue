@@ -9,6 +9,7 @@ export default class NPCSystem {
     this.npcSprites = this.scene.physics.add.staticGroup(); 
     this.gameStore = useGameStore(); 
     this.wanderingNPCs = [];
+    this.npcMap = {};
   }
 
   spawnNPCs(map, collisionLayer) {
@@ -74,8 +75,10 @@ export default class NPCSystem {
 
         const initialDirection = props.direction || config.direction || 'down';
         this.faceDirection(sprite, initialDirection, config);
+        this.npcMap[npcId] = sprite;
       }
-    });
+    }
+  );
   } 
 
   setupWanderingLogic(sprite, collisionLayer, config) {
@@ -155,5 +158,58 @@ export default class NPCSystem {
     const props = {};
     propertiesArray.forEach(p => { props[p.name] = p.value; });
     return props;
+  }
+
+  // 👇 IDUGTONG ITO SA ILALIM NG NPCSystem.js 👇
+  executeMoveRoute(npcId, route, onComplete) {
+    const npc = this.npcMap[npcId];
+    if (!npc) return;
+    
+    const config = npcRegistry[npcId];
+    let stepIndex = 0;
+
+    const nextStep = () => {
+      // Kapag tapos na ang lahat ng hakbang, patakbuhin ang onComplete
+      if (stepIndex >= route.length) {
+        if (onComplete) onComplete(npc);
+        return;
+      }
+
+      const dir = route[stepIndex];
+      stepIndex++;
+
+      let targetX = npc.x;
+      let targetY = npc.y;
+      if (dir === 'left') targetX -= 16;
+      if (dir === 'right') targetX += 16;
+      if (dir === 'up') targetY -= 16;
+      if (dir === 'down') targetY += 16;
+
+      npc.isMoving = true;
+      
+      // I-play ang animation ng NPC
+      const animKey = `${config.spriteKey}-walk-${dir}`;
+      if (this.scene.anims.exists(animKey)) {
+        npc.play(animKey, true);
+      } else {
+        this.faceDirection(npc, dir, config);
+      }
+
+      // Ilakad ang NPC sa susunod na tile
+      this.scene.tweens.add({
+        targets: npc,
+        x: targetX,
+        y: targetY,
+        duration: 250, // Bilis ng lakad ni Mom
+        onComplete: () => {
+          npc.isMoving = false;
+          if (npc.stop) npc.stop();
+          this.faceDirection(npc, dir, config);
+          nextStep(); // Ulitin para sa susunod na hakbang!
+        }
+      });
+    };
+
+    nextStep(); // Simulan ang unang hakbang
   }
 }

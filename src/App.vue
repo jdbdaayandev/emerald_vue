@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 import { config } from './core/phaser/GameConfig.js';
 import { EventBus, EVENTS } from './core/events/EventBus.js';
 import StartMenu from './components/ui/StartMenu.vue';
+import DialogueBox from './components/ui/DialogueBox.vue';
 
 let gameInstance = null;
 const activeMenu = ref(null);
@@ -38,6 +39,7 @@ onUnmounted(() => {
     <div id="ui-layer" class="absolute inset-0 w-full h-full pointer-events-none [&>*]:pointer-events-auto">
       
       <StartMenu v-if="activeMenu === 'startMenu'" />
+      <DialogueBox />
 
     </div>
   </div>

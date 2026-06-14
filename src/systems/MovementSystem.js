@@ -38,6 +38,17 @@ export default class MovementSystem {
   update() {
     if (this.isMoving) return;
 
+    if (this.isButtonDown('A')) {
+      if (!this.spacePressed) {
+        this.spacePressed = true;
+        this.interact(); 
+        
+        // Cooldown para hindi mag-doble-doble ang kausap
+        this.scene.time.delayedCall(500, () => { this.spacePressed = false; });
+      }
+      return; 
+    }
+
     if (this.isButtonDown('LEFT')) {
       this.movePlayer('left');
     } else if (this.isButtonDown('RIGHT')) {
@@ -140,6 +151,48 @@ export default class MovementSystem {
         this.checkIdleFrame(direction);
       }
     });
+  }
+
+  // 👇 IDUGTONG ITO SA ILALIM NG movePlayer 👇
+  interact() {
+    // 1. Alamin kung aling tile ang nasa TAPAT ni Ash
+    let targetX = this.sprite.x;
+    let targetY = this.sprite.y;
+
+    if (this.currentDirection === 'left') targetX -= this.tileSize;
+    if (this.currentDirection === 'right') targetX += this.tileSize;
+    if (this.currentDirection === 'up') targetY -= this.tileSize;
+    if (this.currentDirection === 'down') targetY += this.tileSize;
+
+    // 2. Silipin gamit ang radar kung may NPC doon
+    const hitBodies = this.scene.physics.overlapRect(targetX - 7, targetY - 7, 14, 14);
+    
+    // Hanapin ang unang natamaan na HINDI si Ash at MAY dialogId
+    const npcBody = hitBodies.find(body => body.gameObject !== this.sprite && body.gameObject.dialogId);
+
+    if (npcBody) {
+      const npc = npcBody.gameObject;
+      
+      // 3. Paharapin si NPC sa kung nasaan si Ash!
+      let oppositeDirection = 'down';
+      if (this.currentDirection === 'up') oppositeDirection = 'down';
+      if (this.currentDirection === 'down') oppositeDirection = 'up';
+      if (this.currentDirection === 'left') oppositeDirection = 'right';
+      if (this.currentDirection === 'right') oppositeDirection = 'left';
+      
+      // I-update ang frame ng NPC para tumingin sa'yo
+      if (this.scene.npcSystem) {
+        // Kunin muli ang config gamit ang npcId niya para makuha ang frames
+        const config = require('../data/npcs.json')[npc.npcId];
+        this.scene.npcSystem.faceDirection(npc, oppositeDirection, config);
+      }
+
+      // 4. TAWAGIN ANG DIALOGUE SYSTEM MO DITO!
+      console.log(`💬 Kakausapin si: ${npc.npcId} | Babasahin ang: ${npc.dialogId}`);
+      
+      // Kung may nagawa ka nang dialogue box / UI, dito mo ipapasa ang npc.dialogId
+      // Halimbawa: this.scene.events.emit('SHOW_DIALOGUE', npc.dialogId);
+    }
   }
 
   checkIdleFrame(direction) {

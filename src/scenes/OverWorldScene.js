@@ -5,7 +5,11 @@ import npcRegistry from '../data/npcs.json';
 import MovementSystem from '../systems/MovementSystem.js';
 import AnimationSystem from '../systems/AnimationSystem.js'; 
 import { GameState } from '../core/GameState.js';
-import NPCSystem from '../systems/NPCSystem.js'; 
+import NPCSystem from '../systems/NPCSystem.js';
+import { EventBus, EVENTS } from '../core/events/EventBus.js';
+
+// 👇 1. I-IMPORT ANG BAGONG CUTSCENE FUNCTION 👇
+import { playMomIntro } from '../core/events/MomIntroEvent.js'; 
 
 export default class OverworldScene extends Scene {
   constructor() {
@@ -29,14 +33,10 @@ export default class OverworldScene extends Scene {
     const map = this.make.tilemap({ key: this.currentMapKey });
     const tileset = map.addTilesetImage(this.mapConfig.tilesetNameInTiled, this.mapConfig.tilesetNameInTiled);
     
-    // 1. GROUND LAYER AT OBJECT LAYER
     const groundLayer = map.createLayer('Ground', tileset, 0, 0);
     const objectLayer = map.createLayer('Object', tileset, 0, 0);
-    
-    // 2. COLLISION LAYER
     const collisionLayer = map.createLayer('Collission', tileset, 0, 0);
     
-    // Debug Graphics para sa orange walls
     const debugGraphics = this.add.graphics().setAlpha(0.75); 
     collisionLayer.renderDebug(debugGraphics, {
       tileColor: null, 
@@ -46,7 +46,6 @@ export default class OverworldScene extends Scene {
 
     if (collisionLayer) collisionLayer.setVisible(false);
 
-    // 3. Buhayin ang Player
     const playerSnapX = Math.floor(this.spawnX / 16) * 16 + 8;
     const playerSnapY = Math.floor(this.spawnY / 16) * 16 + 8;
     this.playerSprite = this.physics.add.sprite(playerSnapX, playerSnapY, 'player');
@@ -54,33 +53,31 @@ export default class OverworldScene extends Scene {
     this.playerSprite.setOrigin(0.5, 0.75);
     this.playerSprite.body.customSize = true;
     this.playerSprite.body.setSize(16, 16, false);
-    
-    // 👇 INAYOS NA OFFSET PARA SA (0.38, 0.75) ORIGIN 👇
     this.playerSprite.body.setOffset(8, 16); 
 
     this.animationSystem = new AnimationSystem(this);
     this.animationSystem.createCharacterAnimations('player');
     this.animationSystem.createCharacterAnimations('npc_1');
+    this.animationSystem.createCharacterAnimations('mom');
     this.playerSprite.setFrame(0);
 
-    // 5. SPAWN NG MGA NPC
     this.npcSystem = new NPCSystem(this);
     this.npcSystem.spawnNPCs(map, collisionLayer);
 
-    // 6. OVERHEAD LAYER
     const overheadLayer = map.createLayer('Overhead', tileset, 0, 0);
     if (overheadLayer) overheadLayer.setDepth(10); 
 
-    // 7. MOVEMENT & CAMERA SYSTEM
     this.movementSystem = new MovementSystem(this, this.playerSprite, collisionLayer);
     this.cameras.main.startFollow(this.playerSprite);
     this.cameras.main.setZoom(2);
+
+    // 🎬 👇 2. TAWAGIN ANG CUTSCENE SA ISANG LINYA LANG! 👇 🎬
+    playMomIntro(this);
   }
 
   update() {
     this.movementSystem.update();
     
-    // 👇 INAYOS DIN SA UPDATE LOOP PARA HINDI MABURA NG ANIMATIONS 👇
     if (this.playerSprite && this.playerSprite.body) {
       this.playerSprite.body.setSize(16, 16, false);
       this.playerSprite.body.setOffset(8, 16); 
